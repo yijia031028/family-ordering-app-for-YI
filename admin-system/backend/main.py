@@ -20,13 +20,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(admin_dishes.router, prefix="/api/admin", tags=["Dishes"])
-app.include_router(admin_users.router, prefix="/api/admin", tags=["Users"])
+app.include_router(admin_dishes.router, prefix="/admin", tags=["Dishes"])
+app.include_router(admin_users.router, prefix="/admin", tags=["Users"])
 
-@app.get("/api/admin/health")
+@app.get("/admin/health")
 def health():
     return {"status": "ok", "service": "admin-backend"}
 
-@app.get("/api/admin")
+@app.get("/admin")
 def root():
     return {"message": "Admin API is running"}
