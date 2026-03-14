@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { getProxiedImageUrl } from '../utils/imageUtils';
+import { getSmartImageUrl, getProxiedImageUrl, onProbeComplete, getExternalAccessible } from '../utils/imageUtils';
 
 interface OptimizedImageProps {
   /** 原始图片 URL */
@@ -13,21 +13,57 @@ interface OptimizedImageProps {
 }
 
 /**
- * 智能图片组件：优先直连原始 URL，加载失败时自动回退到 Vercel 代理
- * - 新加坡等可直连地区：直接加载原始图片（快速稳定）
- * - 中国等被封锁地区：直连失败 → 自动切换到代理 URL
+ * 智能图片组件
+ * - 如果全局探测判定外部可达：直连原始 URL
+ * - 如果全局探测判定外部不可达：立即用代理 URL（无延迟）
+ * - 如果探测尚未完成：先直连，onError + 超时双重回退
  */
 export default function OptimizedImage({ src, alt, className, style }: OptimizedImageProps) {
-  const [currentSrc, setCurrentSrc] = useState(src || '');
+  const [currentSrc, setCurrentSrc] = useState(() => getSmartImageUrl(src));
   const [hasTriedProxy, setHasTriedProxy] = useState(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+
+  // 监听全局探测结果：如果探测完成且需要代理，立即切换
+  useEffect(() => {
+    if (!src) return;
+
+    onProbeComplete((accessible) => {
+      if (!accessible) {
+        const proxied = getProxiedImageUrl(src);
+        if (proxied !== src) {
+          setCurrentSrc(proxied);
+          setHasTriedProxy(true);
+        }
+      }
+    });
+  }, [src]);
+
+  // 5 秒超时回退：兜底机制，防止 onError 始终不触发
+  useEffect(() => {
+    if (!src || hasTriedProxy || getExternalAccessible() === true) return;
+
+    timeoutRef.current = setTimeout(() => {
+      if (!hasTriedProxy) {
+        const proxied = getProxiedImageUrl(src);
+        if (proxied !== src) {
+          setCurrentSrc(proxied);
+          setHasTriedProxy(true);
+        }
+      }
+    }, 5000);
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [src, hasTriedProxy]);
 
   const handleError = useCallback(() => {
-    // 如果还没尝试过代理，且代理 URL 与原始 URL 不同，则回退到代理
     if (!hasTriedProxy && src) {
       const proxiedUrl = getProxiedImageUrl(src);
       if (proxiedUrl !== src) {
         setCurrentSrc(proxiedUrl);
         setHasTriedProxy(true);
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
       }
     }
   }, [src, hasTriedProxy]);
@@ -41,7 +77,6 @@ export default function OptimizedImage({ src, alt, className, style }: Optimized
       className={className}
       style={style}
       onError={handleError}
-      loading="lazy"
     />
   );
 }
@@ -64,8 +99,8 @@ interface OptimizedBgImageProps {
 }
 
 /**
- * 智能背景图组件：用于替代 `div + background-image` 模式
- * 先用原始 URL 作为背景，通过隐藏的 <img> 检测加载状态，失败时自动切换到代理 URL
+ * 智能背景图组件
+ * 同样利用全局探测结果 + onError + 超时三重保障
  */
 export function OptimizedBgImage({
   src,
@@ -75,13 +110,48 @@ export function OptimizedBgImage({
   children,
   onClick,
 }: OptimizedBgImageProps) {
-  const [bgUrl, setBgUrl] = useState(src || '');
+  const [bgUrl, setBgUrl] = useState(() => getSmartImageUrl(src));
   const hasTriedProxyRef = useRef(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   // 当 src prop 变化时重置状态
   useEffect(() => {
-    setBgUrl(src || '');
+    setBgUrl(getSmartImageUrl(src));
     hasTriedProxyRef.current = false;
+  }, [src]);
+
+  // 监听全局探测结果
+  useEffect(() => {
+    if (!src) return;
+
+    onProbeComplete((accessible) => {
+      if (!accessible && !hasTriedProxyRef.current) {
+        const proxied = getProxiedImageUrl(src);
+        if (proxied !== src) {
+          hasTriedProxyRef.current = true;
+          setBgUrl(proxied);
+        }
+      }
+    });
+  }, [src]);
+
+  // 5 秒超时回退
+  useEffect(() => {
+    if (!src || hasTriedProxyRef.current || getExternalAccessible() === true) return;
+
+    timeoutRef.current = setTimeout(() => {
+      if (!hasTriedProxyRef.current && src) {
+        const proxied = getProxiedImageUrl(src);
+        if (proxied !== src) {
+          hasTriedProxyRef.current = true;
+          setBgUrl(proxied);
+        }
+      }
+    }, 5000);
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
   }, [src]);
 
   const handleProbeError = useCallback(() => {
@@ -90,6 +160,7 @@ export function OptimizedBgImage({
       if (proxiedUrl !== src) {
         hasTriedProxyRef.current = true;
         setBgUrl(proxiedUrl);
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
       }
     }
   }, [src]);
@@ -104,7 +175,7 @@ export function OptimizedBgImage({
       style={{ ...style, backgroundImage }}
       onClick={onClick}
     >
-      {/* 隐藏的探测图片，用于检测原始 URL 是否可加载 */}
+      {/* 隐藏的探测图片，用于检测 URL 是否可加载 */}
       <img
         src={bgUrl}
         alt=""

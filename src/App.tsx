@@ -7,6 +7,10 @@ import OrderSummary from './pages/OrderSummary';
 import RecipeLibrary from './pages/RecipeLibrary';
 import { AppProvider } from './context/AppContext';
 import { AuthProvider } from './context/AuthContext';
+import { startNetworkProbe } from './utils/imageUtils';
+
+// 在应用加载时立即启动网络探测（3 秒内判定 Google 等外部域名是否可达）
+startNetworkProbe();
 
 export default function App() {
   return (
