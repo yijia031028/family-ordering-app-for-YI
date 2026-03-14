@@ -1,9 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-import axios from 'axios';
-import { useAuth } from './AuthContext';
 import { API_BASE } from '../config';
 
 export interface Order {
