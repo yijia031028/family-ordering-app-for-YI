@@ -1,6 +1,8 @@
 /**
  * 图像处理工具类
- * 用于优化在中国境内的加载速度
+ * 提供直连 URL 和代理 URL 的双重策略：
+ * - 新加坡等可直连地区：优先使用原始 URL（快速稳定）
+ * - 中国等被封锁地区：直连失败后自动回退到 Vercel 代理 URL
  */
 
 const SUPABASE_PROJECT_ID = 'apsfgjcqkikszpxcysiv';
@@ -13,26 +15,33 @@ const PROXY_GOOGLE = '/google-img/';
 const PROXY_WIKI = '/wiki-img/';
 
 /**
- * 将图片 URL 转换为本地 Vercel 代理 URL
- * 这样可以利用 Vercel 的边缘 CDN 缓存，提高在国内的加载速度，并绕过域名封锁
+ * 获取代理后的图片 URL（仅在回退时使用）
+ * @param url 原始图片 URL
+ * @returns 代理路径，如果该 URL 无需代理则返回原始 URL
  */
-export const getOptimizedImageUrl = (url: string | undefined): string => {
+export const getProxiedImageUrl = (url: string | undefined): string => {
   if (!url) return '';
   
-  // 处理 Supabase 存储地址
   if (url.includes(SUPABASE_STORAGE_URL)) {
     return url.replace(SUPABASE_STORAGE_URL, PROXY_SUPABASE);
   }
   
-  // 处理 Google 图片
   if (url.startsWith(GOOGLE_IMG_HOST)) {
     return url.replace(GOOGLE_IMG_HOST, PROXY_GOOGLE);
   }
 
-  // 处理 Wikimedia 图片
   if (url.startsWith(WIKI_IMG_HOST)) {
     return url.replace(WIKI_IMG_HOST, PROXY_WIKI);
   }
   
+  return url;
+};
+
+/**
+ * 兼容旧调用：直接返回原始 URL（不再强制代理）
+ * NOTE: 新代码应使用 OptimizedImage 组件，而不是手动调用此函数
+ */
+export const getOptimizedImageUrl = (url: string | undefined): string => {
+  if (!url) return '';
   return url;
 };

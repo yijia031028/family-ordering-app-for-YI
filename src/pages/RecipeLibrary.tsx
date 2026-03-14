@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { dishes } from '../data/dishes';
 import { useAppContext } from '../context/AppContext';
-import { getOptimizedImageUrl } from '../utils/imageUtils';
+import { OptimizedBgImage } from '../components/OptimizedImage';
 
 export default function RecipeLibrary() {
   const { favorites, toggleFavorite } = useAppContext();
@@ -117,10 +117,16 @@ export default function RecipeLibrary() {
                 </div>
                 {categoryDishes.map((dish, idx) => (
                   <div key={idx} className="relative group rounded-xl overflow-hidden aspect-[3/4] shadow-lg">
-                    <Link to={`/dish/${dish.id}`} className="block w-full h-full bg-cover bg-center cursor-pointer" style={{ backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0) 60%, rgba(0,0,0,0.8) 100%), url("${getOptimizedImageUrl(dish.image)}")` }}>
-                      <div className="absolute bottom-4 left-4 right-4">
-                        <p className="text-white text-base font-bold leading-tight group-hover:text-primary transition-colors">{dish.name}</p>
-                      </div>
+                    <Link to={`/dish/${dish.id}`} className="block w-full h-full cursor-pointer">
+                      <OptimizedBgImage
+                        src={dish.image}
+                        className="w-full h-full bg-cover bg-center"
+                        overlayGradient="linear-gradient(to bottom, rgba(0,0,0,0) 60%, rgba(0,0,0,0.8) 100%)"
+                      >
+                        <div className="absolute bottom-4 left-4 right-4">
+                          <p className="text-white text-base font-bold leading-tight group-hover:text-primary transition-colors">{dish.name}</p>
+                        </div>
+                      </OptimizedBgImage>
                     </Link>
                     <button 
                       onClick={(e) => {
