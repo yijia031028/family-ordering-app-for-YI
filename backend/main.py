@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api import users, orders, favorites
+try:
+    from backend.api import users, orders, favorites
+except ImportError:
+    from api import users, orders, favorites
 
 app = FastAPI(title="家庭点餐 API", description="前后端一体化家庭点餐后端", version="1.0.0")
 
@@ -14,13 +17,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 注册路由 - 为了保证本地和 Vercel 都能正确匹配，我们注册两次或者使用灵活的前缀
-# 1. 带 /api 前缀的 (Vercel 可能会传递全路径)
+# 注册路由 - 为了保证无论是本地直接运行还是通过 Vercel 路由都能正确匹配
 app.include_router(users.router, prefix="/api")
 app.include_router(orders.router, prefix="/api")
 app.include_router(favorites.router, prefix="/api")
 
-# 2. 不带前缀的 (以防 Vercel 剥离了 /api)
+# 重复注册不带前缀的路由，以防 Vercel 剥离了 /api 路径
 app.include_router(users.router)
 app.include_router(orders.router)
 app.include_router(favorites.router)

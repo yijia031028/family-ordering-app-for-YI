@@ -3,10 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth, UserProfile } from '../context/AuthContext';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-
-const API_BASE = window.location.hostname === 'localhost' 
-  ? 'http://localhost:8000/api' 
-  : '/api';
+import { API_BASE } from '../config';
 
 export default function Home() {
   const { userProfile, switchMember } = useAuth();

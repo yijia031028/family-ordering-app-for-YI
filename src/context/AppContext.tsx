@@ -1,10 +1,10 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
-
-const API_BASE = window.location.hostname === 'localhost' 
-  ? 'http://localhost:8000/api' 
-  : '/api';
+import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import axios from 'axios';
+import { useAuth } from './AuthContext';
+import { API_BASE } from '../config';
 
 export interface Order {
   id: string;
