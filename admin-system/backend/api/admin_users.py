@@ -3,12 +3,8 @@ from pathlib import Path
 from typing import List
 from fastapi import APIRouter, HTTPException
 
-# Reuse database from parent backend
-parent_backend = Path(__file__).resolve().parent.parent.parent / "backend"
-if str(parent_backend) not in sys.path:
-    sys.path.append(str(parent_backend))
-
-from database import get_supabase
+# Reuse local database.py
+from ..database import get_supabase
 
 router = APIRouter()
 

@@ -5,14 +5,8 @@ from typing import List
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from pydantic import BaseModel
 
-# Add root backend to path to reuse database.py if possible, 
-# but per user request to NOT mix, we might want to redefine or import carefully.
-# We will import database from the parent backend folder to reuse the Supabase client.
-parent_backend = Path(__file__).resolve().parent.parent.parent / "backend"
-if str(parent_backend) not in sys.path:
-    sys.path.append(str(parent_backend))
-
-from database import get_supabase
+# Import from local database.py
+from ..database import get_supabase
 
 router = APIRouter()
 
