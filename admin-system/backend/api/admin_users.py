@@ -4,7 +4,7 @@ from typing import List
 from fastapi import APIRouter, HTTPException
 
 # Reuse local database.py
-from ..database import get_supabase
+from database import get_supabase
 
 router = APIRouter()
 

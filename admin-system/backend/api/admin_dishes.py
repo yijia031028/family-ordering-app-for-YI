@@ -6,7 +6,7 @@ from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from pydantic import BaseModel
 
 # Import from local database.py
-from ..database import get_supabase
+from database import get_supabase
 
 router = APIRouter()
 
