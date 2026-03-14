@@ -15,9 +15,9 @@ app.add_middleware(
 )
 
 # 注册路由
-app.include_router(users.router)
-app.include_router(orders.router)
-app.include_router(favorites.router)
+app.include_router(users.router, prefix="/api")
+app.include_router(orders.router, prefix="/api")
+app.include_router(favorites.router, prefix="/api")
 
 @app.get("/")
 def root():
