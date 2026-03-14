@@ -1,8 +1,17 @@
+import sys
+from pathlib import Path
+
+# 获取当前文件所在目录并加入 sys.path
+backend_dir = Path(__file__).parent
+if str(backend_dir) not in sys.path:
+    sys.path.append(str(backend_dir))
+
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .api import users, orders, favorites
+# 现在可以直接从 api 导入，因为 backend_dir 在路径中
+from api import users, orders, favorites
 
 app = FastAPI(title="家庭点餐 API", description="前后端一体化家庭点餐后端", version="1.0.0")
 
