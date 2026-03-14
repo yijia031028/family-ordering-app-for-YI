@@ -47,3 +47,18 @@ CREATE POLICY "Allow All operations for anon and authenticated on Order" ON publ
 
 ALTER TABLE public."Favorite" ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow All operations for anon and authenticated on Favorite" ON public."Favorite" FOR ALL USING (true) WITH CHECK (true);
+
+-- Create Dish Table
+CREATE TABLE IF NOT EXISTS public."Dish" (
+    "id" uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    "name" text NOT NULL,
+    "category" text NOT NULL,
+    "image" text NOT NULL,
+    "tags" text[] DEFAULT '{}'::text[],
+    "chefNote" text DEFAULT '',
+    "ingredients" jsonb DEFAULT '[]'::jsonb,
+    "created_at" timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public."Dish" ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow All operations for anon and authenticated on Dish" ON public."Dish" FOR ALL USING (true) WITH CHECK (true);

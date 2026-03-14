@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #f97316; /* 橙色 */
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #1e293b;
+}
+
+.btn-primary {
+  @apply bg-orange-500 text-white font-bold py-2 px-6 rounded-xl shadow-lg shadow-orange-200 hover:bg-orange-600 active:scale-95 transition-all;
+}
+
+.card {
+  @apply bg-white rounded-2xl shadow-sm border border-slate-100 p-6;
+}

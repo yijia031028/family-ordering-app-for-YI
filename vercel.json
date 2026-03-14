@@ -6,7 +6,18 @@
       "use": "@vercel/python"
     },
     {
+      "src": "admin-system/backend/main.py",
+      "use": "@vercel/python"
+    },
+    {
       "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
+      "src": "admin-system/frontend/package.json",
       "use": "@vercel/static-build",
       "config": {
         "distDir": "dist"
@@ -17,6 +28,18 @@
     {
       "source": "/api/(.*)",
       "destination": "backend/main.py"
+    },
+    {
+      "source": "/admin-api/(.*)",
+      "destination": "admin-system/backend/main.py"
+    },
+    {
+      "source": "/admin/(.*)",
+      "destination": "admin-system/frontend/$1"
+    },
+    {
+      "source": "/admin",
+      "destination": "admin-system/frontend/index.html"
     },
     {
       "source": "/(.*)",
