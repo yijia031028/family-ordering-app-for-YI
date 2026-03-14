@@ -1,10 +1,8 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-try:
-    from backend.api import users, orders, favorites
-except ImportError:
-    from api import users, orders, favorites
+from .api import users, orders, favorites
 
 app = FastAPI(title="家庭点餐 API", description="前后端一体化家庭点餐后端", version="1.0.0")
 
@@ -17,15 +15,32 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 注册路由 - 为了保证无论是本地直接运行还是通过 Vercel 路由都能正确匹配
+# 注册路由 - 统一使用 /api 前缀
+# 我们不在路由器内部带前缀，而是统一在 include_router 时加上，这样更清晰
 app.include_router(users.router, prefix="/api")
 app.include_router(orders.router, prefix="/api")
 app.include_router(favorites.router, prefix="/api")
 
-# 重复注册不带前缀的路由，以防 Vercel 剥离了 /api 路径
-app.include_router(users.router)
-app.include_router(orders.router)
-app.include_router(favorites.router)
+@app.get("/api/health")
+@app.get("/health")
+def health_check():
+    from .database import get_supabase
+    try:
+        supabase = get_supabase()
+        # 尝试进行一个超轻量级的查询
+        supabase.table("User").select("count").limit(1).execute()
+        db_status = "connected"
+    except Exception as e:
+        db_status = f"error: {str(e)}"
+    
+    return {
+        "status": "online",
+        "database": db_status,
+        "environment": {
+            "has_url": bool(os.getenv("SUPABASE_URL")),
+            "has_key": bool(os.getenv("SUPABASE_KEY"))
+        }
+    }
 
 @app.get("/api")
 @app.get("/")
