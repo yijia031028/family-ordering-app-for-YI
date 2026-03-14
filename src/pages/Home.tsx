@@ -52,7 +52,7 @@ export default function Home() {
       <div className="px-4 py-4">
         <div 
           className="w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden rounded-xl aspect-[4/3] shadow-lg border-4 border-white dark:border-slate-800"
-          style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuAE3estRAGT85tKv4ksFcoC9fNS5u_4BJ6DK6B4hpKZBn4ptPp2ag2oiasAdlTM7dBdrXtSJkzL3vxa0DLxIfHC0UVPFJ3pK_GeORjdrJhytdzGFNfPkeUgAe11f2W05dVBwf1oMrWAeGkRCfPevmv1BC5kKWozmiofDVFR4yc3ks8zI4ipSqFhGimWPXy5EYhuwpeXlxqN8I9Rdn440CVQ-0ty_rdWxR5UTHBJphqAzf8QSw-s3T5VUjOnYm4vpkwZz2Xze2-I9xO9")' }}
+          style={{ backgroundImage: `url("${getOptimizedImageUrl('https://lh3.googleusercontent.com/aida-public/AB6AXuAE3estRAGT85tKv4ksFcoC9fNS5u_4BJ6DK6B4hpKZBn4ptPp2ag2oiasAdlTM7dBdrXtSJkzL3vxa0DLxIfHC0UVPFJ3pK_GeORjdrJhytdzGFNfPkeUgAe11f2W05dVBwf1oMrWAeGkRCfPevmv1BC5kKWozmiofDVFR4yc3ks8zI4ipSqFhGimWPXy5EYhuwpeXlxqN8I9Rdn440CVQ-0ty_rdWxR5UTHBJphqAzf8QSw-s3T5VUjOnYm4vpkwZz2Xze2-I9xO9')}")` }}
         />
       </div>
 
