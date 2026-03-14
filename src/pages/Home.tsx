@@ -4,6 +4,7 @@ import { useAuth, UserProfile } from '../context/AuthContext';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { API_BASE } from '../config';
+import { getOptimizedImageUrl } from '../utils/imageUtils';
 
 export default function Home() {
   const { userProfile, switchMember } = useAuth();
@@ -81,7 +82,7 @@ export default function Home() {
               >
                 <div className="relative">
                   <div className={`size-16 rounded-full border-2 p-1 transition-all ${isMe ? 'border-4 border-primary shadow-md' : 'border-primary/30 group-hover:border-primary'}`}>
-                    <img className="size-full rounded-full object-cover" src={member.avatar} alt={member.name} />
+                    <img className="size-full rounded-full object-cover" src={getOptimizedImageUrl(member.avatar)} alt={member.name} />
                   </div>
                 </div>
                 <div className={`flex items-center gap-1 ${isMe ? 'text-primary font-bold' : 'text-slate-800 dark:text-slate-200 font-semibold'} text-sm`}>

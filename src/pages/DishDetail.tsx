@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { dishes } from '../data/dishes';
 import { useAuth } from '../context/AuthContext';
 import { useAppContext } from '../context/AppContext';
+import { getOptimizedImageUrl } from '../utils/imageUtils';
 
 export default function DishDetail() {
   const { id } = useParams<{ id: string }>();
@@ -55,7 +56,7 @@ export default function DishDetail() {
       <div className="px-4 py-3 max-w-3xl mx-auto w-full">
         <div 
           className="w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden rounded-xl min-h-80 shadow-lg"
-          style={{ backgroundImage: `url("${dish.image}")` }}
+          style={{ backgroundImage: `url("${getOptimizedImageUrl(dish.image)}")` }}
         />
       </div>
 

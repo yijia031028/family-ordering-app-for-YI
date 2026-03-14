@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Utensils, Search, Filter, Edit2, Trash2, Tag } from 'lucide-react';
 import axios from 'axios';
+import { getOptimizedImageUrl } from '../utils/imageUtils';
 
 const ADMIN_API = '/admin-api';
 
@@ -74,7 +75,7 @@ export default function DishLibrary() {
           {filteredDishes.map(dish => (
             <div key={dish.id} className="card group hover:shadow-xl hover:shadow-orange-100/50 transition-all overflow-hidden !p-0">
               <div className="aspect-video relative overflow-hidden">
-                <img src={dish.image} alt={dish.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                <img src={getOptimizedImageUrl(dish.image)} alt={dish.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                 <div className="absolute top-2 right-2 flex gap-1">
                   <span className="px-2 py-1 bg-black/50 backdrop-blur-md text-white rounded-lg text-[10px] font-bold">
                     {dish.category}

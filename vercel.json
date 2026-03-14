@@ -42,6 +42,10 @@
       "destination": "admin-system/frontend/index.html"
     },
     {
+      "source": "/supabase-img/(.*)",
+      "destination": "https://apsfgjcqkikszpxcysiv.supabase.co/storage/v1/object/public/dishes/$1"
+    },
+    {
       "source": "/(.*)",
       "destination": "/$1"
     }

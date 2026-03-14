@@ -3,6 +3,7 @@ import { Calendar, Bell, Lightbulb, Clock, Play, CheckCircle, UtensilsCrossed, H
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useAppContext, Order } from '../context/AppContext';
+import { getOptimizedImageUrl } from '../utils/imageUtils';
 
 export default function OrderSummary() {
   const { userProfile } = useAuth();
@@ -121,7 +122,7 @@ export default function OrderSummary() {
                 <div key={order.id} className="group flex flex-col md:flex-row gap-4 p-4 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-cream-soft dark:border-slate-700 hover:shadow-md transition-shadow">
                   <div className="relative h-40 md:h-32 md:w-44 shrink-0 overflow-hidden rounded-xl bg-cream-soft/50 dark:bg-slate-700/50 flex items-center justify-center">
                     {order.dish_image ? (
-                      <img className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src={order.dish_image} alt={order.dish_name} />
+                      <img className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src={getOptimizedImageUrl(order.dish_image)} alt={order.dish_name} />
                     ) : (
                       <UtensilsCrossed size={48} className="text-warm-gray/30 dark:text-slate-500/30" />
                     )}
