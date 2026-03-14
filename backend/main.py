@@ -14,11 +14,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 注册路由
+# 注册路由 - 为了保证本地和 Vercel 都能正确匹配，我们注册两次或者使用灵活的前缀
+# 1. 带 /api 前缀的 (Vercel 可能会传递全路径)
 app.include_router(users.router, prefix="/api")
 app.include_router(orders.router, prefix="/api")
 app.include_router(favorites.router, prefix="/api")
 
+# 2. 不带前缀的 (以防 Vercel 剥离了 /api)
+app.include_router(users.router)
+app.include_router(orders.router)
+app.include_router(favorites.router)
+
+@app.get("/api")
 @app.get("/")
 def root():
-    return {"message": "Welcome to Family Order API"}
+    return {"message": "Welcome to Family Order API", "status": "online"}
